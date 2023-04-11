@@ -6,13 +6,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.*;
 import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.quarkus.logging.Log;
 import io.quarkus.panache.common.Sort;
 import org.acme.Models.User;
 import org.acme.Repository.UserRepository;
 import org.bson.types.ObjectId;
+import org.apache.commons.codec.binary.Hex;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +42,10 @@ public class UserController {
 
     @POST
     public User addUser(User user) {
+        if(user==null){
+            LOG.info("Empty:...");
+            return null;
+        }
         LOG.info("Creating user:...");
         userRepository.persist(user);
         return user;
@@ -47,6 +54,11 @@ public class UserController {
     @PUT
     @Path("/{id}")
     public User updateUser(@PathParam("id") String id, User user) {
+        if(user==null){
+            LOG.info("Empty:...");
+            return null;
+        }
+
         LOG.info("Updating user...");
         User entity = userRepository.findById(new ObjectId(id));
         entity.name=user.name;

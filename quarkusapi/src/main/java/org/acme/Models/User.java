@@ -7,17 +7,18 @@ import org.bson.codecs.pojo.annotations.BsonId;
 public class User  {
 
     @BsonId
-    public String id;
+    public String _id;
     public String name;
     public String surname;
     public String reg_st;
+
 
     public User() {
 
     }
 
     public User(String id, String name, String surname, String registrationState) {
-        this.id = id;
+        this._id = id;
         this.name = name;
         this.surname = surname;
         this.reg_st = registrationState;
@@ -28,7 +29,7 @@ public class User  {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + _id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", registrationState='" + reg_st + '\'' +
