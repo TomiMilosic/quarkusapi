@@ -6,22 +6,33 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.*;
 import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
+
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
-import io.quarkus.logging.Log;
+
 import io.quarkus.panache.common.Sort;
 import org.acme.Models.User;
 import org.acme.Repository.UserRepository;
 import org.bson.types.ObjectId;
-import org.apache.commons.codec.binary.Hex;
+
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserController {
     private static final Logger LOG = Logger.getLogger("User controller");
+
+    public String getRandomHexString(){
+        Random r = new Random();
+        StringBuffer sb = new StringBuffer();
+        while(sb.length() < 24){
+            sb.append(Integer.toHexString(r.nextInt()));
+        }
+
+        return sb.toString().substring(0, 24);
+    }
 
     @Inject
     UserRepository userRepository;
@@ -36,7 +47,7 @@ public class UserController {
     @Path("/{id}")
     public User getUser(@PathParam("id") String id) {
         LOG.info("Getting user by id...");
-        return userRepository.findById(new ObjectId(id));
+        return userRepository.find("_id", id).firstResult();
 
     }
 
@@ -60,11 +71,12 @@ public class UserController {
         }
 
         LOG.info("Updating user...");
-        User entity = userRepository.findById(new ObjectId(id));
+        User entity = userRepository.find("_id", id).firstResult();
+        entity.id= user.id;
         entity.name=user.name;
         entity.surname=user.surname;
         entity.reg_st=user.reg_st;
-        userRepository.persist(entity);
+        userRepository.update(entity);
         return entity;
     }
 
@@ -72,6 +84,7 @@ public class UserController {
     @Path("/{id}")
     public void deleteUser(@PathParam("id") String id) {
         LOG.info("Deleting user...");
-        userRepository.deleteById(new ObjectId(id));
+        var user= userRepository.find("_id", id).firstResult();
+        userRepository.delete(user);
     }
 }

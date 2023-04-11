@@ -1,5 +1,0 @@
-org\acme\MyLivenessCheck.class
-org\acme\Repository\UserRepository.class
-org\acme\Controllers\UserController.class
-META-INF\panache-archive.marker
-org\acme\Models\User.class

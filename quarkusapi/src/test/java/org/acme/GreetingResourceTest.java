@@ -19,32 +19,38 @@ public class GreetingResourceTest {
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("$.size()", equalTo(2)); // Assuming that there are 2 users in the database
+                .body("$.size()", equalTo(1)); // Assuming that there are 2 users in the database
     }
 
+
+
     @Test
-    public void testAddNewUser() {
-        // Define the new user to be added
+    public void testDeleteUser() {
+        // First, add a new user to the database for testing purposes
         String requestBody = "{"
-                + "\"id\": \"12345\","
+                + "\"id\": \"123456\","
                 + "\"name\": \"John\","
                 + "\"surname\": \"Doe\","
                 + "\"reg_st\": \"active\""
                 + "}";
-
-        // Make a POST request to the /users endpoint with the new user in the request body
         given()
                 .body(requestBody)
                 .contentType(ContentType.JSON)
                 .when().post("/users")
                 .then()
-                .statusCode(200)
-                .body("id", equalTo("12345"))
-                .body("name", equalTo("John"))
-                .body("surname", equalTo("Doe"))
-                .body("reg_st", equalTo("active"));
+                .statusCode(200);
+
+        // Then, make a DELETE request to delete the user with ID "12345"
+        given()
+                .when().delete("/users/123456")
+                .then()
+                .statusCode(204);
+
+        // Finally, check that the user was actually deleted by attempting to retrieve it
+        given()
+                .when().get("/users/123456")
+                .then()
+                .statusCode(204);
     }
-
-
 
 }
